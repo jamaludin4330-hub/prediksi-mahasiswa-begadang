@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulasi Random Forest: Prediksi Mahasiswa Begadang</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div id="bar"></div>
+<header>
+<a class="logo" href="#atas"><i></i>Forest Lab</a>
+<nav><a href="#studi">Studi Kasus</a><a href="#simulasi">Simulasi</a><a href="#teori">Konsep Dasar</a><a href="#kuis">Uji Pemahaman</a><a href="#eksperimen">Eksperimen</a><a href="#faq">Pertanyaan Umum</a></nav>
+</header>
+
+<section class="hero" id="atas">
+<span class="sh s1"></span><span class="sh s2"></span><span class="sh s3"></span><span class="sh s4"></span>
+<div class="wrap">
+<span class="sticker">Tugas 1 Pembelajaran Mesin</span>
+<h1>Klasifikasi <em>Random Forest</em><br>Langkah demi Langkah</h1>
+<p class="lead">Simulasi algoritme Random Forest untuk memprediksi kebiasaan begadang mahasiswa. Setiap tahap perhitungan, mulai dari bootstrap sampling, Entropy, Gain, Split Info, hingga Gain Ratio, ditampilkan secara rinci dan dapat ditelusuri.</p>
+<a class="btn" href="#simulasi">Mulai Simulasi</a> <a class="btn alt" href="#teori">Pelajari Konsep</a>
+<div class="stats">
+<div class="st c1"><b class="num" data-n="14">0</b><span>Data Latih</span></div>
+<div class="st c2"><b class="num" data-n="4">0</b><span>Atribut</span></div>
+<div class="st c3"><b class="num" data-n="3">0</b><span>Pohon Keputusan</span></div>
+<div class="st c4"><b class="num" data-n="2">0</b><span>Kelas Target</span></div>
+</div>
+</div>
+</section>
+<div class="mq"><div>ENTROPY &nbsp;✦&nbsp; GAIN &nbsp;✦&nbsp; SPLIT INFO &nbsp;✦&nbsp; GAIN RATIO &nbsp;✦&nbsp; BOOTSTRAP &nbsp;✦&nbsp; OUT-OF-BAG &nbsp;✦&nbsp; MAYORITAS VOTE &nbsp;✦&nbsp; ENTROPY &nbsp;✦&nbsp; GAIN &nbsp;✦&nbsp; SPLIT INFO &nbsp;✦&nbsp; GAIN RATIO &nbsp;✦&nbsp; BOOTSTRAP &nbsp;✦&nbsp; OUT-OF-BAG &nbsp;✦&nbsp; MAYORITAS VOTE &nbsp;✦&nbsp;</div></div>
+
+<section class="band c-pea"><div class="wrap">
+<h2>Panduan Penggunaan</h2>
+<div class="grid3 rv">
+<div class="card how h1c"><b>01</b><h3>Siapkan Dataset</h3><p>Ubah dataset latih dan tentukan data baru yang akan diklasifikasikan.</p></div>
+<div class="card how h2c"><b>02</b><h3>Konfigurasi Pohon</h3><p>Pilih mode Otomatis (pengambilan acak) atau Manual (parameter ditentukan sendiri).</p></div>
+<div class="card how h3c"><b>03</b><h3>Jalankan dan Analisis</h3><p>Telusuri pohon keputusan, rincian perhitungan, dan hasil mayoritas vote.</p></div>
+</div></div></section>
+
+<section class="band c-lil" id="studi"><div class="wrap">
+<h2>Studi Kasus: Prediksi Mahasiswa Begadang</h2>
+<p>Sistem memprediksi apakah seorang mahasiswa akan begadang (tidur melewati tengah malam) berdasarkan empat kondisi sebelum tidur. Dataset yang digunakan merupakan <b>data ilustrasi</b> yang disusun untuk keperluan simulasi algoritme, bukan hasil survei.</p>
+<div class="attrs rv">
+<div class="at a1"><i>D</i><b>Deadline</b><small>Tidak Ada · Minggu Ini · Besok</small><p>Semakin dekat tenggat tugas, semakin besar kecenderungan untuk begadang.</p></div>
+<div class="at a2"><i>K</i><b>Konsumsi Kopi</b><small>Tidak · Sedikit · Banyak</small><p>Kafein menunda rasa kantuk.</p></div>
+<div class="at a3"><i>J</i><b>Jadwal Besok</b><small>Libur · Siang · Pagi</small><p>Kuliah pagi mendorong mahasiswa tidur lebih awal.</p></div>
+<div class="at a4"><i>G</i><b>Penggunaan Gawai</b><small>Jarang · Sedang · Sering</small><p>Pemakaian gawai menjelang tidur cenderung memperlambat waktu tidur.</p></div>
+<div class="at a5"><i>?</i><b>Begadang (kelas)</b><small>Ya · Tidak</small><p>Kelas target yang diprediksi oleh model.</p></div>
+</div></div></section>
+
+<section class="band c-pk" id="simulasi"><div class="wrap">
+<h2>Simulasi</h2>
+<div class="card">
+<h3><span class="n">1</span>Dataset</h3>
+<p class="muted">Nilai pada tabel dapat diubah langsung. Dataset harus memiliki tepat <b>dua kelas</b>. Baris <b>Target</b> (berwarna) adalah data baru yang akan diklasifikasikan. Parameter <b>m</b> menyatakan jumlah fitur acak yang dipertimbangkan pada setiap node. <b>Seed</b> adalah bilangan awal pengacakan agar hasil dapat direproduksi.</p>
+<div class="bar2"><button id="addRow">+ Baris</button><button id="addCol">+ Fitur</button>
+<label>m <input id="m" type="number" min="1" value="2"></label>
+<label>Seed <input id="seed" placeholder="mis. 7"></label>
+<button id="reset" class="ghost">Reset ke contoh</button></div>
+<div class="scroll"><table id="data"></table></div>
+</div>
+<div class="card">
+<h3><span class="n">2</span>Konfigurasi Hutan (3 Pohon)</h3>
+<p class="muted">Pada mode <b>Otomatis</b>, bootstrap dan fitur kandidat dipilih secara acak di setiap node. Pada mode <b>Manual</b>, isi ID baris bootstrap (jumlahnya sama dengan banyak data dan boleh berulang) serta fitur kandidat untuk setiap iterasi, berurutan mulai dari akar. Isian Manual bawaan sesuai dengan perhitungan manual pada laporan.</p>
+<div id="cfg" class="grid3"></div>
+<button id="build" class="big">Bangun Random Forest</button>
+<p id="err" class="err"></p>
+</div>
+<div id="out"></div>
+</div></section>
+
+<section class="band c-but" id="teori"><div class="wrap">
+<h2>Konsep Dasar</h2>
+<p>Pilih salah satu kartu untuk menampilkan penjelasan istilah.</p>
+<div class="fcs">
+<div class="fc f1"><h4>Entropy</h4><p>Ukuran ketidakmurnian data. Bernilai 0 apabila seluruh data berada dalam satu kelas, dan bernilai 1 apabila kedua kelas berjumlah sama.<code>Entropy = -Σ pi·log₂(pi)</code></p></div>
+<div class="fc f2"><h4>Information Gain</h4><p>Penurunan entropy setelah data dipisah berdasarkan suatu atribut. Semakin besar nilainya, semakin baik atribut tersebut sebagai pemisah.<code>Gain = Entropy(S) - Σ (|Si|/|S|)·Entropy(Si)</code></p></div>
+<div class="fc f3"><h4>Split Info</h4><p>Ukuran penyebaran data pada cabang-cabang suatu atribut. Nilainya digunakan untuk menormalkan Gain agar atribut dengan banyak nilai tidak diuntungkan.<code>SplitInfo = -Σ (|Si|/|S|)·log₂(|Si|/|S|)</code></p></div>
+<div class="fc f4"><h4>Gain Ratio</h4><p>Hasil bagi Gain dengan Split Info. Atribut dengan Gain Ratio tertinggi dipilih sebagai node pemisah.<code>GainRatio = Gain / SplitInfo</code></p></div>
+<div class="fc f5"><h4>Bootstrap Sampling</h4><p>Pengambilan n data secara acak <b>dengan pengembalian</b>. Sebagian data dapat terambil lebih dari sekali dan sebagian lain tidak terambil, sehingga setiap pohon dilatih dengan data yang berbeda.</p></div>
+<div class="fc f1"><h4>Out-of-Bag</h4><p>Data yang tidak terambil pada bootstrap suatu pohon. Data ini dapat digunakan untuk menguji pohon tersebut.</p></div>
+<div class="fc f2"><h4>Fitur Kandidat</h4><p>Pada setiap node hanya m atribut yang dipilih secara acak untuk dibandingkan. Mekanisme ini membuat pohon-pohon dalam hutan saling berbeda.</p></div>
+<div class="fc f3"><h4>Mayoritas Vote</h4><p>Setiap pohon memberikan satu suara prediksi. Kelas dengan suara terbanyak menjadi keputusan akhir hutan.</p></div>
+</div>
+<h3 style="margin-top:34px">Alur Algoritma</h3>
+<div class="tl rv">
+<div><b>1</b>Bootstrap sampling: ambil n data secara acak dengan pengembalian.</div>
+<div><b>2</b>Pilih m atribut secara acak pada setiap node.</div>
+<div><b>3</b>Pilih atribut dengan Gain Ratio tertinggi, lalu ulangi hingga data seragam.</div>
+<div><b>4</b>Ulangi proses untuk membentuk pohon kedua dan ketiga.</div>
+<div><b>5</b>Tentukan kelas data baru berdasarkan suara terbanyak.</div>
+</div></div></section>
+
+<section class="band c-ink" id="kuis"><div class="wrap">
+<h2>Uji Pemahaman</h2><p>Tiga pertanyaan singkat untuk mengukur pemahaman Anda terhadap konsep di atas.</p>
+<div id="quiz"></div></div></section>
+
+<section class="band c-min" id="eksperimen"><div class="wrap">
+<h2>Eksperimen</h2>
+<details><summary>1. Mengamati pengaruh pengacakan antar pohon</summary><p><b>Pengaturan:</b> biarkan ketiga pohon pada mode Otomatis tanpa mengisi seed. <b>Tindakan:</b> jalankan simulasi beberapa kali. <b>Pengamatan:</b> baris bootstrap, fitur kandidat, dan bentuk pohon berubah pada setiap percobaan. <b>Kesimpulan:</b> pengacakan menghasilkan pohon-pohon yang beragam.</p></details>
+<details><summary>2. Mereproduksi hasil menggunakan seed</summary><p><b>Pengaturan:</b> isi kolom Seed, misalnya 7. <b>Tindakan:</b> jalankan simulasi dua kali. <b>Pengamatan:</b> hasil kedua percobaan identik. <b>Kesimpulan:</b> seed membuat proses acak dapat direproduksi.</p></details>
+<details><summary>3. Mereproduksi perhitungan manual</summary><p><b>Pengaturan:</b> ubah ketiga pohon ke mode Manual dengan isian bawaan. <b>Tindakan:</b> jalankan simulasi. <b>Pengamatan:</b> hasilnya sama dengan laporan, yaitu Ya, Tidak, Tidak, dengan keputusan akhir Tidak.</p></details>
+<details><summary>4. Mengubah data yang diklasifikasikan</summary><p><b>Pengaturan:</b> ubah baris Target, misalnya Jadwal Besok menjadi Libur. <b>Tindakan:</b> jalankan ulang simulasi. <b>Pengamatan:</b> prediksi dapat berubah karena jalur yang dilalui pada tiap pohon berbeda.</p></details>
+</div></section>
+
+<section class="band c-lil" id="faq"><div class="wrap">
+<h2>Pertanyaan Umum</h2>
+<details><summary>Mengapa hasil setiap pohon dapat berbeda?</summary><p>Perbedaan berasal dari dua sumber pengacakan, yaitu data bootstrap yang terambil dan atribut kandidat yang dipilih pada setiap node.</p></details>
+<details><summary>Mengapa menggunakan Gain Ratio dan bukan Gain saja?</summary><p>Gain cenderung memilih atribut yang memiliki banyak nilai. Split Info menormalkan kecenderungan tersebut sehingga pemilihan atribut menjadi lebih seimbang.</p></details>
+<details><summary>Apa perbedaan mode Otomatis dan mode Manual?</summary><p>Mode Otomatis memilih bootstrap dan atribut kandidat secara acak. Mode Manual memungkinkan pengguna menentukan keduanya, sehingga sesuai untuk mereproduksi perhitungan manual.</p></details>
+<details><summary>Mengapa sebuah daun dapat berisi data dari dua kelas?</summary><p>Apabila atribut sudah habis dipakai sementara data masih bercampur, kelas daun ditentukan berdasarkan jumlah data terbanyak pada node tersebut.</p></details>
+</div></section>
+<footer>Forest Lab · Simulasi Random Forest · Tugas 1 Pembelajaran Mesin</footer>
+<script>
+const DEF={features:{{ features|tojson }},rows:{{ rows|tojson }},target:{{ target|tojson }},manual:{{ manual|tojson }}};
+</script>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
